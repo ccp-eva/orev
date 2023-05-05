@@ -1,0 +1,415 @@
+---
+title: "oREV visuals"
+output: html_document
+---
+```{r setup, include=FALSE}
+library(scales)
+library(cowplot)
+library(tidyverse)
+library(ggpubr)
+library(ggthemes)
+library(tidyboot)
+library(readxl)
+library(geomtextpath)
+library(ggridges)
+library(tidybayes)
+```
+
+
+```{r}
+data <- read_csv("../data/clean_data.csv")
+
+irt_dat <- data%>%
+  select(subjID, targetWord, correct, order, sex, aoa_german_comb)
+
+aoa <- data%>%distinct(targetWord, .keep_all = T)%>%select(targetWord, aoa_german_comb)
+
+full <- data%>%
+  group_by(subjID)%>%
+  summarise(mean_full = mean(correct))
+
+irt1_guess_itemloo_idxs <- readRDS(file = "../saves/irt1_guess_itemloo_idxs.rds")
+
+irt1_guess_sel <- readRDS("../saves/irt1_guess_sel.rds")
+
+irt1_guess_dif_sex_sel<- readRDS("../saves/irt1_guess_dif_sex_sel.rds")
+irt1_guess_dif_order_sel<- readRDS("../saves/irt1_guess_dif_order_sel.rds")
+
+dif_sex_guess <- readRDS("../saves/model_params_irt1_guess_dif_sex.rds")
+dif_order_guess <- readRDS("../saves/model_params_irt1_guess_dif_order.rds")
+
+determine_size <- readRDS("../saves/determine_size.rds")
+
+cor_age_sex <- readRDS("../saves/cor_age_sex.rds")
+
+validity_data <- read_csv("../data/validation_data.csv")
+
+```
+
+# Figure 2
+
+```{r}
+p2 <- data%>%
+  group_by(source,subjID, age)%>%
+  tidyboot_mean(col = correct)
+
+page <- ggplot(p2, aes(x = age, y = mean))+
+  #stat_cor()+
+  geom_hline(yintercept = 0.25, lty = 3, alpha = .75)+
+  #geom_point(alpha = .25)+
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), alpha = .5, size = .25)+
+  #geom_point( alpha = .75)+
+  geom_smooth(method = "lm", col = "firebrick", alpha = .25)+
+  labs(x = "Participant age", y = "Proportion correct (by participant)")+
+  ylim(0,1)+
+  xlim(3,8)+
+  theme_few()
+```
+
+```{r}
+p1 <- data%>%
+  group_by(targetWord, source, aoa_german_comb, german)%>%
+  tidyboot_mean(col = correct)
+
+paoa <- p1%>%
+ggplot(aes(x = aoa_german_comb, y = mean, col = source))+
+  stat_cor(aes(x = aoa_german_comb, y = mean,label = paste(..r.label..)),inherit.aes = F,r.accuracy = 0.01, cor.coef.name = "r",label.y = 0.85)+
+  geom_hline(yintercept = 0.25, lty = 3, alpha = .75)+
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), alpha = .75, pch = 1)+
+  #facet_grid(~measure)+
+  #geom_textpath(aes(label = german), hjust = -.2) +
+  #geom_point( alpha = .75)+
+  geom_smooth(method = "lm", col = "firebrick", alpha = .25)+
+  scale_color_colorblind(name = "")+
+  labs(x = "Age of acquisition (adult rated)", y = "Proportion correct (by item)")+
+  ylim(0,1)+
+  theme_few()+
+  theme(legend.position = c(0.2,0.5))
+```
+
+```{r}
+frq <- data%>%
+  group_by(targetWord, source, aoa_german_comb, german)%>%
+  summarise(perf = mean(correct))%>%
+  left_join(
+    data%>%select(targetWord, german, aoa_german_comb)%>%distinct(targetWord, german, aoa_german_comb)%>%
+      left_join(read_xlsx("../data/childLex_0.17.01c_2018-12-24_schr.xlsx", sheet = 2)%>%rename(german = lemma)%>%mutate(german = tolower(german), german = ifelse(german == "türe", "tür", german))%>%select(-type))%>%
+      distinct(targetWord, german, aoa_german_comb, .keep_all = T)%>%
+      select(-pos, -bigram.min, -bigram.sum, -nei.old20, -nei.n, -n.syl,-n.letters, -cd, -atype.abs, -type.abs, -lemma.abs)%>%
+      pivot_longer(cols = c(aoa_german_comb, atype.norm, type.norm, lemma.norm), names_to = "type", values_to = "value")%>%
+      group_by(type)
+    )
+
+frq%>%
+  #filter(!german %in% c("fahrrad", "tiger", "treppe", "fisch", "apfel", "telefon"))%>%
+  group_by(type)%>%
+  summarise(corel = cor(perf, value, use = "pairwise.complete.obs"))
+
+frq%>%filter(type == "type.norm")%>%arrange(-value)
+```
+
+
+
+```{r}
+sex_dif_id <- data%>%
+  group_by(subjID,sex)%>%
+  summarise(mean = mean(correct))
+
+order_dif_id <- data%>%
+  group_by(subjID,order)%>%
+  summarise(mean = mean(correct))
+
+dif_id <- bind_rows(
+  sex_dif_id%>%rename(comparison = sex)%>%mutate(type = "by sex"),
+  order_dif_id%>%rename(comparison = order)%>%mutate(type = "by order")
+)%>%
+  mutate(comparison = recode(comparison,
+                             m = "Male",
+                             f = "Female",
+                             orderA = "Order A", 
+                             orderB = "Order B",))
+
+
+
+sex_dif <- data%>%
+  group_by(sex)%>%
+  tidyboot_mean(col = correct)
+
+order_dif <- data%>%
+  group_by(order)%>%
+  tidyboot_mean(col = correct)
+
+dif <- bind_rows(
+  sex_dif%>%rename(comparison = sex)%>%mutate(type = "by sex"),
+  order_dif%>%rename(comparison = order)%>%mutate(type = "by order")
+)%>%
+  mutate(comparison = recode(comparison,
+                             m = "Male",
+                             f = "Female",
+                             orderA = "Order A", 
+                             orderB = "Order B",))
+
+```
+
+```{r}
+pdif <- ggplot(dif, aes(x = comparison, y = mean))+
+  geom_dotplot(data = dif_id, aes(x = comparison, y = mean), binaxis='y', stackdir='center',
+               stackratio=1.5, dotsize=.2, alpha = .2)+
+  geom_bar(stat = "identity", alpha = .25)+
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), alpha = .75)+
+  facet_grid(~type, scales = "free_x" )+
+  scale_y_continuous(limits=c(0.5,1),oob = rescale_none)+
+  labs(y = "Proportion correct (by participant)", x = "")+
+  theme_few()
+```
+
+```{r}
+ggarrange(page, paoa,pdif, nrow = 1, labels = c("A","B", "C"), widths = c(1,1,1))
+```
+
+```{r}
+ggsave("../graphs/data_fig.png", width = 12, height = 3, scale = 1.25, bg = "white")
+```
+
+
+# Figure 3
+
+```{r}
+icc1_guess_sel <- posterior_samples(irt1_guess_sel)%>% 
+  select(b_eta_Intercept, starts_with("r_targetWord"))%>%
+  dplyr::mutate(iter = 1:n()) %>% 
+  pivot_longer(starts_with("r_targetWord"), names_to = "item", values_to = "xi") %>%
+  mutate(item = str_extract(string = item, pattern = "(?<=\\[).*(?=,Intercept\\])"))%>%
+  tidyr::expand(nesting(iter, b_eta_Intercept, item, xi),
+         theta = seq(from = -6, to = 6, length.out = 100)) %>% 
+  mutate(p = 0.25 + 0.75*inv_logit_scaled((b_eta_Intercept + theta + xi))) %>%  
+  group_by(theta, item) %>% 
+  dplyr::summarise(p = mean(p))%>%
+  left_join(aoa%>%dplyr::rename(item = targetWord))
+```
+
+```{r}
+picc <- icc1_guess_sel %>% 
+  ggplot(aes(x = theta, y = p,group = item, col = aoa_german_comb)) +
+  #geom_line() +
+  geom_textline(aes(label = item)) +
+  geom_hline(yintercept = 0.25, lty = 3, alpha = .75)+
+  scale_color_viridis_c(name = "Rated age of acquisition") +
+  labs(#title = "ICCs for the 1PL",
+       x = expression(theta~('ability on the logit scale')),
+       y = expression(italic(p)(y==1))) +
+  ylim(0,1)+
+  theme_few()+
+  theme(legend.position = c(0.5,0.1), legend.direction = "horizontal")
+```
+
+
+```{r}
+pss <- determine_size%>%
+  group_by(size)%>%
+  summarise(mean_cor = mean(correlation),
+         min = min(correlation),
+         max = max(correlation))
+
+pssa <- cor_age_sex%>%
+  group_by(size, sex, age_group)%>%
+  summarise(mean_cor = mean(cor),
+         min = min(cor),
+         max = max(cor))
+
+
+psel <- ggplot()+
+  geom_vline(xintercept = 22, alpha = .5, col = "#31493C")+
+  geom_linerange(data = pssa,aes(x = size, ymin=min, ymax = max, col = factor(age_group), pch = sex),pch = 1, alpha = .5)+
+  geom_line(data = pssa,aes(x = size, y=mean_cor ,col = factor(age_group),lty = sex),pch = 1, alpha = .5)+
+geom_point(data = pssa,aes(x = size, y=mean_cor ,col = factor(age_group), pch = sex), alpha = .5)+
+  geom_linerange(data = pss,aes(x = size, ymin=min, max = max))+
+  geom_point(data = pss,aes(x = size, y=mean_cor ))+
+  geom_line(data = pss, aes(group = 1, x = size, y = mean_cor))+
+  scale_linetype(name = "Sex")+
+  scale_shape(name = "Sex")+
+  scale_x_continuous(breaks = c(10:40))+
+  scale_color_ptol(name = "Age group")+
+  theme_few()+
+  ylim(0.8, 1)+
+  theme(legend.position = c(.7,.4), axis.ticks.x = element_blank(), axis.text.x = element_blank(), axis.title.x = element_blank(), legend.direction = "horizontal")+
+  labs(y = "Correlation with full task")
+```
+
+```{r}
+pmc <- determine_size%>%
+  filter(iter < 6)%>%
+  mutate(ratio = ifelse(elpd_diff == 0,0,ratio))%>%
+  #pivot_longer(cols = c(ratio, correlation), names_to = "type",values_to = "value")%>%
+  ggplot(aes(x = size, y = ratio))+
+  geom_vline(xintercept = 22, alpha = .5, col = "#31493C")+
+  geom_hline(yintercept = 1, alpha = .5, col = "#31493C", lty = 3)+
+  geom_line(aes(group = iter), alpha = .25)+
+  geom_point(alpha = .75)+
+  scale_x_continuous(breaks = c(10:40))+
+  scale_y_continuous(breaks = c(0,0.5, 1, 1.5), labels = c("0.00","0.50", "1.00", "1.50"))+
+  #geom_line()+
+  #facet_grid(type~. , scales = "free_y")+
+  theme_few()+
+  labs(x = "No. of items in subset", y = expression(paste("2PL vs. 1PL: ", frac(Delta ~ elpd, "2 *"~SE(Delta ~ elpd)))))
+```
+
+```{r}
+plot_grid(plot_grid(pmc,psel, align = 'v', ncol = 1, labels = c("A","B")),
+          picc, labels = c("","C"))
+```
+
+```{r}
+ggsave("../graphs/item_fig2.png", width = 12, height = 5, scale = 1.25, bg = "white")
+```
+
+# Figure 4
+
+```{r}
+difo1 <- ggplot(dif_order_guess,aes(x = reorder(item, aoa_german_comb))) +
+	geom_point(aes(col = order, y = lci), position = position_dodge(width = .5)) +
+  geom_point(aes(col = order, y = uci), position = position_dodge(width = .5)) +
+  geom_linerange(aes(col = order, ymin = lci + 0.1, ymax = uci-0.1), position = position_dodge(width = .5), alpha = .5) +
+	coord_flip() +
+  scale_color_manual(labels = c("A","B"), name = "Test order",values = colorblind_pal()(8)[c(6,8)])+
+	labs(x = "Item", y = "Easiness estimate")+
+  theme_few()
+```
+
+```{r}
+difo2 <- dif_order_guess%>%
+  pivot_wider(names_from = order, values_from = c(mode,uci,lci))%>%
+  ggplot(., aes(x = mode_A, y = mode_B))+
+  geom_abline(intercept = 0, slope = 1, lty = 3, alpha = .75)+
+  geom_point(pch = 1, size = 2, stroke  = 1)+
+  geom_linerange(aes(ymin = lci_A, ymax = uci_A),  alpha = .25, lty = 1)+
+  geom_linerange(aes(xmin = lci_B, xmax = uci_B),  alpha = .25, lty = 1)+
+  #geom_text(aes(label = item, x = uci_f +0.2))+
+  labs(x = "Order: A", y = "Order: B")+
+  scale_color_viridis_d()+
+  guides(col = F)+
+  coord_fixed()+
+  theme_few()
+  
+```
+
+
+```{r}
+difs1 <- ggplot(dif_sex_guess,aes(x = reorder(item, aoa_german_comb))) +
+	geom_point(aes(col = sex, y = lci), position = position_dodge(width = .5)) +
+  geom_point(aes(col = sex, y = uci), position = position_dodge(width = .5)) +
+  geom_linerange(aes(col = sex, ymin = lci + 0.1, ymax = uci-0.1), position = position_dodge(width = .5), alpha = .5) +
+	coord_flip() +
+  scale_color_manual(labels = c("male","female"), name = "Group", values = colorblind_pal()(8)[c(4,7)])+
+	labs(x = "Item", y = "Easiness estimate")+
+  theme_few()
+```
+
+```{r}
+difs2 <- dif_sex_guess%>%
+  pivot_wider(names_from = sex, values_from = c(mode,uci,lci))%>%
+  ggplot(., aes(x = mode_f, y = mode_m))+
+  geom_abline(intercept = 0, slope = 1, lty = 3, alpha = .75)+
+  geom_point(pch = 1, size = 2, stroke  = 1)+
+  geom_linerange(aes(ymin = lci_m, ymax = uci_m),  alpha = .25, lty = 1)+
+  geom_linerange(aes(xmin = lci_f, xmax = uci_f),  alpha = .25, lty = 1)+
+  #geom_text(aes(label = item, x = uci_f +0.2))+
+  labs(x = "Group: female", y = "Group: male")+
+  scale_color_viridis_d()+
+  guides(col = F)+
+  coord_fixed()+
+  theme_few()
+  
+```
+
+```{r}
+difs <- ggdraw() +
+  draw_plot(difs1 + theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), legend.position = c(0.1, 0.1)))+
+  draw_plot(difs2 + theme(plot.background = element_blank()), x = 0.625, y = .57, width = .42, height = .42)
+
+difo <- ggdraw() +
+  draw_plot(difo1 + theme(legend.position = c(0.1, 0.1))) + 
+  draw_plot(difo2+ theme(plot.background = element_blank()), x = 0.62, y = .57, width = .42, height = .42)
+
+
+plot_grid(difo, difs, labels = c("A", "B"))
+```
+
+```{r}
+ggsave("../graphs/item_fig4.png", width = 14, height = 5, scale = 1.25, bg = "white")
+```
+
+# Figure 5
+
+```{r}
+cor_o_p <- cor.test(validity_data$orev_score, validity_data$ppvt_score)
+label_cor_o_p <- paste0(" (", as.character(round(cor_o_p$conf.int,2)[1]), " - ", as.character(round(cor_o_p$conf.int,2)[2]), ")")
+
+cor_o_d <- cor.test(validity_data$orev_score, validity_data$digit_span)
+label_cor_o_d <- paste0(" (", as.character(round(cor_o_d$conf.int,2)[1]), " - ", as.character(round(cor_o_d$conf.int,2)[2]), ")")
+
+m_data_val<- validity_data%>%
+  ungroup()%>%
+  mutate(age = scale(age),
+         ppvt_score = scale(ppvt_score),
+         digit_span = scale(digit_span))
+  
+
+m1 <- brm(orev_score |trials(22) ~ age + ppvt_score + digit_span, family = binomial, data = m_data_val, chains = 4, cores = 4)
+```
+
+
+```{r}
+pop <- data%>%
+  ggplot(aes(x = ppvt_score, y = orev_score))+
+  #geom_count(pch = 1, alpha = .5)+
+  geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
+  stat_cor(aes(x = ppvt_score, y = orev_score,
+               label = paste(..r.label..," ", label_cor_o_p)
+               ), inherit.aes = F,r.accuracy = 0.01, cor.coef.name = "r")+
+  geom_smooth(method = "lm", col = "firebrick")+
+  scale_size_continuous(breaks = c(1:22))+
+  labs(y = "oREV score", x = "PPVT score")+
+  theme_few()
+
+pod <- data%>%
+  ggplot(aes(x = digit_span, y = orev_score))+
+  #geom_count(pch = 1, alpha = .5)+
+  geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
+  stat_cor(aes(x = digit_span, y = orev_score,
+               label = paste(..r.label..," ", label_cor_o_d)
+               ), inherit.aes = F,r.accuracy = 0.01, cor.coef.name = "r")+
+  geom_smooth(method = "lm", col = "firebrick")+
+  scale_size_continuous(breaks = c(1:22))+
+  scale_x_continuous(breaks = c(0,5,10), labels = c(0,5,10), limits = c(0,10))+
+  labs(y = "oREV score", x = "Digit span")+
+  theme_few()
+
+pme <- m1 %>%
+  gather_draws(b_age, b_ppvt_score, b_digit_span)%>%
+  mutate(Predictor = recode(.variable,
+                        b_age = "Age",
+                        b_ppvt_score = "PPVT score",
+                        b_digit_span = "Digit span"),
+         Predictor = factor(Predictor, levels = c("Age","PPVT score", "Digit span")))%>%
+  ggplot(aes(y = Predictor, x = .value, fill = stat(x) > 0)) +
+  stat_halfeye(alpha = .7, .width = c(.95, .80)) +
+    labs(x = "Model Estimate", y ="")+
+  guides(fill = F)+
+  #ggtitle("DV: Reaction Time (25m)")+
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("grey", "#85AD00"))+
+  theme_few()+
+  theme(legend.position = "right")+ 
+  theme(plot.title = element_text(hjust=-0.2))
+
+plot_grid(pop, 
+          plot_grid(pme, pod, align = 'l', nrow = 1, labels = c("B","C"),rel_widths = c(1.2, 1)), labels = c("A",""), ncol = 1, rel_heights = c(1.75, 1))
+
+```
+
+```{r}
+ggsave("../graphs/val_fig5.png", height = 8, width = 6, scale = 1.25)
+```
+
+

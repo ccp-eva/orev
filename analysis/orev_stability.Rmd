@@ -1,0 +1,65 @@
+---
+title: "orev Stability"
+output: html_document
+date: "2023-05-05"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+
+```{r}
+orev_stab <- read_csv("../../vocab/data/clean_data.csv")%>%
+  filter(targetWord %in% readRDS("../../vocab/saves/selected_items_rasch.rds"))%>%
+  group_by(subjID,sex, age, test_day)%>%
+  rename(test_day_t1 = test_day)%>%
+  summarise(orev_t1 = sum(correct))%>%
+  left_join(read_csv("../data/stability_data.csv")%>%
+              group_by(subjID, test_day)%>%
+              rename(test_day_t2 = test_day)%>%
+              summarise(orev_t2 = sum(correct)))%>%
+  na.omit()%>%
+  ungroup()%>%
+  mutate(time_dif = as.numeric(difftime(test_day_t2, test_day_t1, "days")))
+```
+
+```{r}
+orev_stab%>%
+  ggplot(aes(x = time_dif))+
+  geom_histogram(fill = NA, col = "black")+
+  theme_few()
+```
+
+```{r}
+orev_stab%>%group_by(sex)%>%summarise(n = n_distinct(subjID))
+
+mean(orev_stab$age)
+range(orev_stab$age)
+
+mean(orev_stab$time_dif)
+range(orev_stab$time_dif)
+```
+
+
+
+```{r}
+cor.test(orev_stab$orev_t1, orev_stab$orev_t2)
+
+
+orev_stab%>%
+  ungroup()%>%
+  summarise(mean_t1 = mean(orev_t1)/22, 
+            mean_t2 = mean(orev_t2)/22)
+```
+```{r}
+orev_stab%>%
+  ggplot(aes(x = orev_t1, y = orev_t2))+
+  geom_abline(intercept = 0, slope = 1, lty = 3, alpha = .5)+
+  geom_jitter(pch = 19, alpha = .5, fill = "grey", height = 0.01, width = 0.01)+
+  #facet_grid(~age_group)+
+  stat_cor()+
+  lims(x = c(0,22), y = c(0,22))+
+  theme_bw()
+```
+

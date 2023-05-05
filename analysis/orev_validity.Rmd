@@ -1,0 +1,111 @@
+---
+title: "oREV validity"
+output: html_document
+date: "2022-12-16"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(brms)
+```
+
+# Load data
+
+```{r}
+data <- read_csv("../data/validation_data.csv")
+```
+
+
+```{r}
+data%>%
+  pivot_longer(cols = c(orev_score, ppvt_score, digit_span), names_to = "measure", values_to = "value")%>%
+  ggplot(aes(x = age, y = value))+
+  geom_point(pch = 1, alpha = .5)+
+  geom_smooth(method = "lm")+
+  facet_wrap(~measure, scales = "free_y")+
+  theme_bw()
+```
+
+```{r}
+data%>%
+  pivot_longer(cols = c(ppvt_score, digit_span), names_to = "second_measure", values_to = "value")%>%
+  ggplot(aes(x = value, y = orev_score))+
+  #geom_count(pch = 1, alpha = .5)+
+  geom_jitter(pch = 1, alpha = .5)+
+  stat_cor()+
+  geom_smooth(method = "lm")+
+  facet_grid(~second_measure, scales = "free_x")+
+  scale_size_continuous(breaks = c(1:10))+
+  theme_bw()
+
+
+```
+
+
+```{r}
+cor.test(data$orev_score, data$ppvt_score)
+
+cor.test(data$orev_score, data$digit_span)
+
+m_data<- data%>%
+  ungroup()%>%
+  mutate(age = scale(age),
+         ppvt_score = scale(ppvt_score),
+         digit_span = scale(digit_span))
+  
+
+m1 <- brm(orev_score |trials(22) ~ age + ppvt_score + digit_span, family = binomial, data = m_data, chains = 4, cores = 4)
+
+m1
+
+```
+
+```{r}
+pop <- data%>%
+  ggplot(aes(x = ppvt_score, y = orev_score))+
+  #geom_count(pch = 1, alpha = .5)+
+  geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
+  stat_cor(aes(x = ppvt_score, y = orev_score,
+               label = paste(..r.label..," ", label_cor_o_p)
+               ), inherit.aes = F,r.accuracy = 0.01, cor.coef.name = "r")+
+  geom_smooth(method = "lm", col = "firebrick")+
+  scale_size_continuous(breaks = c(1:22))+
+  labs(y = "oREV score", x = "PPVT score")+
+  theme_few()
+
+pod <- data%>%
+  ggplot(aes(x = digit_span, y = orev_score))+
+  #geom_count(pch = 1, alpha = .5)+
+  geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
+  stat_cor(aes(x = digit_span, y = orev_score,
+               label = paste(..r.label..," ", label_cor_o_d)
+               ), inherit.aes = F,r.accuracy = 0.01, cor.coef.name = "r")+
+  geom_smooth(method = "lm", col = "firebrick")+
+  scale_size_continuous(breaks = c(1:22))+
+  scale_x_continuous(breaks = c(0,5,10), labels = c(0,5,10), limits = c(0,10))+
+  labs(y = "oREV score", x = "Digit span")+
+  theme_few()
+
+pme <- m1 %>%
+  gather_draws(b_age, b_ppvt_score, b_digit_span)%>%
+  mutate(Predictor = recode(.variable,
+                        b_age = "Age",
+                        b_ppvt_score = "PPVT score",
+                        b_digit_span = "Digit span"),
+         Predictor = factor(Predictor, levels = c("Age","PPVT score", "Digit span")))%>%
+  ggplot(aes(y = Predictor, x = .value, fill = stat(x) > 0)) +
+  stat_halfeye(alpha = .7, .width = c(.95, .80)) +
+    labs(x = "Model Estimate", y ="")+
+  guides(fill = F)+
+  #ggtitle("DV: Reaction Time (25m)")+
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("grey", "#85AD00"))+
+  theme_few()+
+  theme(legend.position = "right")+ 
+  theme(plot.title = element_text(hjust=-0.2))
+
+plot_grid(pop, 
+          plot_grid(pme, pod, align = 'l', nrow = 1, labels = c("B","C"),rel_widths = c(1.2, 1)), labels = c("A",""), ncol = 1, rel_heights = c(1.75, 1))
+
+```
+
