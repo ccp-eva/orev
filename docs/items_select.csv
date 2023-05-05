@@ -1,23 +1,23 @@
-item_nr,target_de,target_en,unrelated_distractor_de,unrelated_distractor_en,semantic_distractor_de,semantic_distractor_en,phonological_distractor_de,phonological_distractor_en,select
-2,möhre,carrot,uhr,clock,gurke,cucumber,bett,bed,TRUE
-4,ameise,ant,käse,cheese,vogel,bird,ball,ball,TRUE
-5,auge,eye,trommel,drum,nase,nose,kamm,comb,TRUE
-10,ananas,pineapple,krawatte,tie,wassermelone,watermelon,gitarre,guitar,TRUE
-23,giraffe,giraffe,auto,car,schnecke,snail,pizza,pizza,TRUE
-33,zucchini,zucchini,skateboard,skateboard,brokkoli,broccoli,bikini,bikini,TRUE
-35,rucola,arugula / rocket,plakat,poster,rosenkohl,brussels sprouts,drakula,dracula,TRUE
-36,ruine,ruin,torwart,goalkeeper,festung,fortress,schiene,rail / tracks,TRUE
-37,elch,elk,skelett,skeleton,mammut,mammoth,kelch,goblet / chalice / cup,TRUE
-38,gazelle,gazelle,astronaut,astronaut,reh,deer,libelle,dragonfly,TRUE
-39,ozean,ocean,fabrik,factory,fluss,river,pelikan,pelican,TRUE
-40,palme,palm tree,pokal,cup,kaktus,cactus,(trink)halme,(drinking) straws,TRUE
-41,ventilator,ventilator,teekanne,teapot,fächer,fan,gartentor,garden gate,TRUE
-42,labyrinth,labyrinth,stau,traffic jam,achterbahn,roller coaster,wirbelwind,whirlwind,TRUE
-43,flunder,flounder,pyramide,pyramid,orca,orca,holunder,elderberry,TRUE
-44,pfifferling,chanterelle,diamant,diamond,kastanie,chestnut,schmetterling,butterfly,TRUE
-45,chor,choir,tastatur,keyboard,orchester,orchestra,rohr,pipe,TRUE
-47,nelke,carnation / pinks,kompass,compass,veilchen,violets,zelte,tents,TRUE
-48,hummer,lobster,mikroskop,microscope,krebs,crab,klammer,clip,TRUE
-49,cello,cello,steg,landing bridge,harfe,harp,marshmallow,NA,TRUE
-50,kajak,kayak,bumerang,boomerang,segelboot,sailingboat,rucksack,backpack,TRUE
-52,orchidee,orchid,banner,banner,strauch,shrub / bush,zehe,toe,TRUE
+target_de,target_en,unrelated_distractor_de,unrelated_distractor_en,semantic_distractor_de,semantic_distractor_en,phonological_distractor_de,phonological_distractor_en,item_nr
+auge,eye,trommel,drum,nase,nose,kamm,comb,1
+möhre,carrot,uhr,clock,gurke,cucumber,bett,bed,2
+ameise,ant,käse,cheese,vogel,bird,ball,ball,3
+elch,elk,skelett,skeleton,mammut,mammoth,kelch,goblet / chalice / cup,4
+chor,choir,tastatur,keyboard,orchester,orchestra,rohr,pipe,5
+ventilator,ventilator,teekanne,teapot,fächer,fan,gartentor,garden gate,6
+rucola,arugula / rocket,plakat,poster,rosenkohl,brussels sprouts,drakula,dracula,7
+giraffe,giraffe,auto,car,schnecke,snail,pizza,pizza,8
+palme,palm tree,pokal,cup,kaktus,cactus,(trink)halme,(drinking) straws,9
+ananas,pineapple,krawatte,tie,wassermelone,watermelon,gitarre,guitar,10
+ozean,ocean,fabrik,factory,fluss,river,pelikan,pelican,11
+gazelle,gazelle,astronaut,astronaut,reh,deer,libelle,dragonfly,12
+pfifferling,chanterelle,diamant,diamond,kastanie,chestnut,schmetterling,butterfly,13
+ruine,ruin,torwart,goalkeeper,festung,fortress,schiene,rail / tracks,14
+labyrinth,labyrinth,stau,traffic jam,achterbahn,roller coaster,wirbelwind,whirlwind,15
+orchidee,orchid,banner,banner,strauch,shrub / bush,zehe,toe,16
+zucchini,zucchini,skateboard,skateboard,brokkoli,broccoli,bikini,bikini,17
+kajak,kayak,bumerang,boomerang,segelboot,sailingboat,rucksack,backpack,18
+hummer,lobster,mikroskop,microscope,krebs,crab,klammer,clip,19
+nelke,carnation / pinks,kompass,compass,veilchen,violets,zelte,tents,20
+flunder,flounder,pyramide,pyramid,orca,orca,holunder,elderberry,21
+cello,cello,steg,landing bridge,harfe,harp,marshmallow,marshmallow,22
