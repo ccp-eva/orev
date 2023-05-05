@@ -15,10 +15,7 @@ orev_stab <- read_csv("../../vocab/data/clean_data.csv")%>%
   group_by(subjID,sex, age, test_day)%>%
   rename(test_day_t1 = test_day)%>%
   summarise(orev_t1 = sum(correct))%>%
-  left_join(read_csv("../data/stability_data.csv")%>%
-              group_by(subjID, test_day)%>%
-              rename(test_day_t2 = test_day)%>%
-              summarise(orev_t2 = sum(correct)))%>%
+  left_join(read_csv("../data/stability_data.csv"))%>%
   na.omit()%>%
   ungroup()%>%
   mutate(time_dif = as.numeric(difftime(test_day_t2, test_day_t1, "days")))
