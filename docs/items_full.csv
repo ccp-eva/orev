@@ -1,0 +1,53 @@
+item_nr,target_de,target_en,unrelated_distractor_de,unrelated_distractor_en,semantic_distractor_de,semantic_distractor_en,phonological_distractor_de,phonological_distractor_en
+1,apfel,apple,kerze,candle,banane,banana,knopf,button
+2,möhre,carrot,uhr,clock,gurke,cucumber,bett,bed
+3,fisch,fish,wolke,cloud,katze,cat,bus,bus
+4,ameise,ant,käse,cheese,vogel,bird,ball,ball
+5,auge,eye,trommel,drum,nase,nose,kamm,comb
+6,treppe,stairs,blatt,leaf,lampe,lamp,bär,bear
+7,schreibtisch,desk,helikopter,helicopter,zeitung,newspaper,tennis ball,tennis ball
+8,telefon,telephone,flasche,bottle,schrank,wardrobe,fliege,fly
+9,pfanne,frying pan,hase,rabbit,korb,basket,lkw,truck
+10,ananas,pineapple,krawatte,tie,wassermelone,watermelon,gitarre,guitar
+11,schere,scissors,herz,heart,bürste,brush,maus,mouse
+12,känguru,kangaroo,lippenstift,lipstick,pinguin,penguin,bügeleisen,iron
+13,erdbeere,strawberry,löwe,lion,zitrone,lemon,schuh,boot
+14,flugzeug,airplane,sofa,sofa,traktor,tractor,schwanz,tail
+15,lineal,ruler,sonnenbrille,sunglasses,briefumschlag,envelope,zahnbürste,toothbrush
+16,flagge,flag,mond,moon,glocke,bell,pferd,horse
+17,fahrrad,bicycle,frosch,frog,rutsche,slide,stift,pen
+18,nadel,needle,dach,roof,säge,saw,orange,orange
+19,pinsel,paintbrush,schaukel,swing,tafel,blackboard,huhn,hen
+20,eichhörnchen,squirrel,regenschirm,umbrella,schildkröte,turtle,motorrad,motorbike
+21,leiter,ladder,sonne,sun,tor,gate,pfeiffe,whistle
+22,gürtel,belt,baum,tree,hund,dog,waage,scale
+23,giraffe,giraffe,auto,car,schnecke,snail,pizza,pizza
+24,pilz,mushroom,feder,feather,welle,wave,besen,broom
+25,batterie,battery,regenbogen,rainbow,computer,computer,butterbrot,sandwich
+26,tür,door,ohr,ear,stuhl,chair,kuh,cow
+27,schlange,snake,ballon,balloon,elefant,elephant,hocker,stool
+28,zebra,zebra,weste,vest,krokodil,crocodile,fernseher,television
+29,tiger,tiger,fass,barrel,eule,owl,axt,axe
+30,knochen,bone,schläger,racket,zwiebel,onion,thermometer,thermometer
+31,stern,star,messer,knife,tomate,tomato,bein,leg
+32,mütze,cap,gabel,fork,socke,sock,ente,duck
+33,zucchini,zucchini,skateboard,skateboard,brokkoli,broccoli,bikini,bikini
+34,dachs,badger,grill,grill,waschbär,raccoon,lachs,salmon
+35,rucola,arugula / rocket,plakat,poster,rosenkohl,brussels sprouts,drakula,dracula
+36,ruine,ruin,torwart,goalkeeper,festung,fortress,schiene,rail / tracks
+37,elch,elk,skelett,skeleton,mammut,mammoth,kelch,goblet / chalice / cup
+38,gazelle,gazelle,astronaut,astronaut,reh,deer,libelle,dragonfly
+39,ozean,ocean,fabrik,factory,fluss,river,pelikan,pelican
+40,palme,palm tree,pokal,cup,kaktus,cactus,(trink)halme,(drinking) straws
+41,ventilator,ventilator,teekanne,teapot,fächer,fan,gartentor,garden gate
+42,labyrinth,labyrinth,stau,traffic jam,achterbahn,roller coaster,wirbelwind,whirlwind
+43,flunder,flounder,pyramide,pyramid,orca,orca,holunder,elderberry
+44,pfifferling,chanterelle,diamant,diamond,kastanie,chestnut,schmetterling,butterfly
+45,chor,choir,tastatur,keyboard,orchester,orchestra,rohr,pipe
+46,jaguar,jaguar,narr,jester / joker / fool,panther,panther,bobbycar,bobbycar
+47,nelke,carnation / pinks,kompass,compass,veilchen,violets,zelte,tents
+48,hummer,lobster,mikroskop,microscope,krebs,crab,klammer,clip
+49,cello,cello,steg,landing bridge,harfe,harp,marshmallow,NA
+50,kajak,kayak,bumerang,boomerang,segelboot,sailingboat,rucksack,backpack
+51,satellit,satellite,zelle,cell,rakete,rocket,meteorid,meteorid
+52,orchidee,orchid,banner,banner,strauch,shrub / bush,zehe,toe

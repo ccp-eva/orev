@@ -7,7 +7,6 @@
 # Put your project-specific ignores here:
 saves/irt*
 
-docs/*
 *.webm
 
 saves/irt1_guess_itemloo.rds
@@ -701,9 +700,7 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
-doc/_build/
+
 
 # PyBuilder
 target/
