@@ -4,7 +4,7 @@ shorttitle        : "Vocabulary assessment in 3 to 8-year-old children"
 
 author: 
   - name          : "Manuel Bohn"
-    affiliation   : "1, 2"
+    affiliation   : "1, 2, *"
     corresponding : yes    # Define only one corresponding author
     address       : "Max Planck Institute for Evolutionary Anthropology, Deutscher Platz 6, 04103 Leipzig, Germany"
     email         : "manuel_bohn@eva.mpg.de"
@@ -14,7 +14,7 @@ author:
       - Writing - Original Draft Preparation
       - Writing - Review & Editing
   - name          : "Julia Prein"
-    affiliation   : "1"
+    affiliation   : "1, *"
     role:
       - Conceptualization
       - Software
@@ -60,6 +60,8 @@ affiliation:
     institution   : "Institut für Psychologie, Friedrich-Schiller-Universität Jena, Germany"
   - id            : "4"
     institution   : "Leibniz-Zentrum Allgemeine Sprachwissenschaft, Berlin, Germany"
+  - id            : "*"
+    institution   : "shared first authorship"
 
 authornote: |
   We thank Susanne Mauritz for her help with the data collection.
@@ -68,7 +70,7 @@ abstract: |
   Individual differences in early language abilities are an important predictor of later life outcomes. High-quality, easy-access measures of language abilities are rare, especially in the preschool and primary school years. The present study describes the construction of a new receptive vocabulary task for children between 3 and 8 years of age. The task was implemented as a browser-based web application, allowing for in-person as well as remote data collection via the internet. Based on data from N = 581 German-speaking children, we estimated the psychometric properties of each item in a larger initial item pool via Item Response Modeling. We then applied an automated item selection procedure to select an optimal subset of items based on item difficulty and discrimination. The so-constructed task has 22 items and shows excellent psychometric properties with respect to reliability, stability and convergent and discriminant validity. The construction, implementation, and item selection process described here makes it easy to extend the task or adapt it to different languages. All materials and code are freely accessible to interested researchers. The task can be used via the following website: https://ccp-odc.eva.mpg.de/orev-demo/.
   
 keywords          : "language development, vocabulary, individual differences, Item Response Models"
-wordcount         : "X"
+
 
 bibliography      : "./library.bib"
 
@@ -82,7 +84,7 @@ draft             : no
 
 documentclass     : "apa6"
 classoption       : "man"
-output            : papaja::apa6_docx
+output            : papaja::apa6_pdf
 ---
 
 ```{r setup, include = FALSE}
