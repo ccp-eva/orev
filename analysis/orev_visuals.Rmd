@@ -13,6 +13,7 @@ library(readxl)
 library(geomtextpath)
 library(ggridges)
 library(tidybayes)
+library(brms)
 ```
 
 
@@ -43,14 +44,13 @@ determine_size <- readRDS("../saves/determine_size.rds")
 cor_age_sex <- readRDS("../saves/cor_age_sex.rds")
 
 validity_data <- read_csv("../data/validation_data.csv")
-
 ```
 
 # Figure 2
 
 ```{r}
 p2 <- data%>%
-  group_by(source,subjID, age)%>%
+  group_by(subjID, age)%>%
   tidyboot_mean(col = correct)
 
 page <- ggplot(p2, aes(x = age, y = mean))+
@@ -171,6 +171,9 @@ ggarrange(page, paoa,pdif, nrow = 1, labels = c("A","B", "C"), widths = c(1,1,1)
 ggsave("../graphs/data_fig.png", width = 12, height = 3, scale = 1.25, bg = "white")
 ```
 
+```{r}
+ggsave("../graphs/data_fig.pdf", width = 12, height = 3, scale = 1.25, bg = "white")
+```
 
 # Figure 3
 
@@ -263,6 +266,9 @@ plot_grid(plot_grid(pmc,psel, align = 'v', ncol = 1, labels = c("A","B")),
 ggsave("../graphs/item_fig2.png", width = 12, height = 5, scale = 1.25, bg = "white")
 ```
 
+```{r}
+ggsave("../graphs/item_fig2.pdf", width = 12, height = 5, scale = 1.25, bg = "white")
+```
 # Figure 4
 
 ```{r}
@@ -339,6 +345,10 @@ plot_grid(difo, difs, labels = c("A", "B"))
 ggsave("../graphs/item_fig4.png", width = 14, height = 5, scale = 1.25, bg = "white")
 ```
 
+```{r}
+ggsave("../graphs/item_fig4.pdf", width = 14, height = 5, scale = 1.25, bg = "white")
+```
+
 # Figure 5
 
 ```{r}
@@ -360,7 +370,7 @@ m1 <- brm(orev_score |trials(22) ~ age + ppvt_score + digit_span, family = binom
 
 
 ```{r}
-pop <- data%>%
+pop <- validity_data%>%
   ggplot(aes(x = ppvt_score, y = orev_score))+
   #geom_count(pch = 1, alpha = .5)+
   geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
@@ -372,7 +382,7 @@ pop <- data%>%
   labs(y = "oREV score", x = "PPVT score")+
   theme_few()
 
-pod <- data%>%
+pod <- validity_data%>%
   ggplot(aes(x = digit_span, y = orev_score))+
   #geom_count(pch = 1, alpha = .5)+
   geom_jitter(pch = 19, alpha = .5, stroke = NA, size = 3, width = 0.1, height = 0.1)+
@@ -410,6 +420,10 @@ plot_grid(pop,
 
 ```{r}
 ggsave("../graphs/val_fig5.png", height = 8, width = 6, scale = 1.25)
+```
+
+```{r}
+ggsave("../graphs/val_fig5.pdf", height = 8, width = 6, scale = 1.25)
 ```
 
 

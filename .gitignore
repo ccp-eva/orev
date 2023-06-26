@@ -13,6 +13,13 @@ saves/irt*
 
 paper/revision/*
 
+graphs/icc_example.png
+graphs/fig1.png
+graphs/fig2.pdf
+graphs/fig4.pdf
+graphs/fig3.pdf
+graphs/fig5.pdf
+
 saves/irt1_guess_itemloo.rds
 saves/irt1_guess.rds
 saves/irt1_guess_sel.rds
