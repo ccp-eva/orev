@@ -6,7 +6,7 @@
 
 ------------------------------------------------------------------------
 
-* Bohn, M., Prein, J., Koch, T., Bee, M., Delikaya, B., Haun, D. B. M., & Gagarina, N. (2022). [oREV: an Item Response Theory based open receptive vocabulary task for 3 to 8-year-old children](https://psyarxiv.com/4z86w). *PsyArXiv*.
+* Bohn, M., Prein, J., Koch, T., Bee, M., Delikaya, B., Haun, D. B. M., & Gagarina, N. (2023). [oREV: an Item Response Theory based open receptive vocabulary task for 3 to 8-year-old children](https://psyarxiv.com/4z86w). *Behavior Research Methods*.
 
 ### Usage
 
@@ -24,7 +24,7 @@ Link to task (in German): [oREV](https://ccp-odc.eva.mpg.de/orev-demo/)
 ├── data                        <-- data files
 ├── docs                      
     ├── items_full.csv          <-- initial item list incl. distractors
-    └── items_full.csv          <-- selected items
+    └── items_select.csv        <-- selected items
 ├── graphs                      <-- figures in paper
 ├── paper                       <-- reproducible manuscript file
 └── saves                       <-- saved model outputs
