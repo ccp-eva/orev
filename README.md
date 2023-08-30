@@ -2,7 +2,7 @@
 
 ------------------------------------------------------------------------
 
-> Data and analysis scripts associated with the following manuscript
+> Data and analysis scripts associated with the following paper
 
 ------------------------------------------------------------------------
 
